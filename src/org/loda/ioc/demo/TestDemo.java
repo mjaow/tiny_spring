@@ -67,9 +67,15 @@ public class TestDemo {
 		proxy.addAdvice(new TransactionAspect());
 
 		// 获取代理对象
-		AopDemo p = (AopDemo) proxy.getProxy();
+		IAopDemo p = (IAopDemo) proxy.getProxy();
 
 		// 通过代理对象调用目标对象的指定方法
 		p.doSomething();
+	}
+	
+	@Test
+	public void testInterface(){
+		IAopDemo a=new AopDemo();
+		System.out.println(a.getClass().getInterfaces()[0].isInterface());
 	}
 }

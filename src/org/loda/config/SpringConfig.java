@@ -1,5 +1,7 @@
 package org.loda.config;
 
+import java.util.List;
+
 /**
  * 
  * @ClassName: SpringConfig
@@ -19,5 +21,15 @@ public interface SpringConfig {
 	 * @throws
 	 */
 	String[] basePath();
+
+	/**
+	 * 
+	 * @Title: getTargetToProxy
+	 * @Description: 需要代理的目标类集合
+	 * @param @return 设定文件
+	 * @return List<Class<?>> 返回类型
+	 * @throws
+	 */
+	List<Class<?>> getTargetToProxy();
 
 }

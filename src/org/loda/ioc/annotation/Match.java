@@ -21,7 +21,5 @@ import java.lang.annotation.Target;
 @Documented
 public @interface Match {
 
-	String classFilter() default "";
-	
 	String methodMatch() default "";
 }

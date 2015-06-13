@@ -31,8 +31,6 @@ public class AnnotationContext extends ApplicationContext implements
 			.getLogger(AnnotationContext.class);
 
 	public AnnotationContext(SpringConfig config) {
-		// 刷新spring存储对象的bean容器(map对象)
-		refresh();
 		// 注册bean文件(ioc流程)
 		register(config.basePath());
 	}
@@ -68,7 +66,7 @@ public class AnnotationContext extends ApplicationContext implements
 	 * @throws
 	 */
 	private <T> void loadProperty() {
-		for (Entry<String, Object> entry : map.entrySet()) {
+		for (Entry<String, Object> entry : container.entrySet()) {
 			T t = (T) entry.getValue();
 			for (Field f : t.getClass().getDeclaredFields()) {
 				Inject inject = f.getAnnotation(Inject.class);
@@ -142,10 +140,10 @@ public class AnnotationContext extends ApplicationContext implements
 				String name = child.getName();
 				if (name.endsWith(".class")) {
 					try {
-						Class<? extends T> clazz = (Class<? extends T>) Class
+						Class<? extends T> targetClass = (Class<? extends T>) Class
 								.forName(packageName + "."
 										+ name.substring(0, name.length() - 6));
-						loadBean(clazz);
+						loadBean(targetClass);
 					} catch (ClassNotFoundException e) {
 						throw new PackageNotFoundException("包名" + packageName
 								+ "填写错误导致类文件加载出现异常");
@@ -165,18 +163,22 @@ public class AnnotationContext extends ApplicationContext implements
 	 * @return void 返回类型
 	 * @throws
 	 */
-	private <T> void loadBean(Class<? extends T> clazz) {
-		Component com = clazz.getAnnotation(Component.class);
+	private <T> void loadBean(Class<? extends T> targetClass) {
+		Component com = targetClass.getAnnotation(Component.class);
 		if (com != null) {
 			try {
-				T t = clazz.newInstance();
+				String key = null;
+				T bean = targetClass.newInstance();
 				if (!StringUtils.isBlank(com.value())) {
-					map.put(com.value(), t);
+					key = com.value();
 				} else {
-					map.put(StringUtils.uncapitalize(clazz.getSimpleName()), t);
+					key = StringUtils.uncapitalize(targetClass.getSimpleName());
 				}
+				container.put(key, bean);
+
 			} catch (Exception e) {
-				throw new RuntimeException("无法访问" + clazz.getName() + "的空构造方法");
+				throw new RuntimeException("无法访问" + targetClass.getName()
+						+ "的空构造方法");
 			}
 		}
 	}

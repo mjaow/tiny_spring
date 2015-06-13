@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import org.loda.aop.advice.Before;
 import org.loda.aop.advice.End;
 import org.loda.aop.advice.Error;
-import org.loda.ioc.annotation.Aspect;
 import org.loda.ioc.annotation.Component;
 import org.loda.ioc.annotation.Match;
 
@@ -18,22 +17,19 @@ import org.loda.ioc.annotation.Match;
  * 
  */
 @Component
-@Aspect
+@Match(methodMatch = "org.*.doSomething")
 public class TransactionAspect implements Before, End, Error {
 
-	@Match(classFilter = "org.loda.ioc.demo.AopDemo", methodMatch = "doSomething")
 	@Override
 	public void error(Method method, Object[] args, Exception e) {
 		System.out.println("回滚事务");
 	}
 
-	@Match(classFilter = "org.loda.ioc.demo.AopDemo", methodMatch = "doSomething")
 	@Override
 	public void before(Method method, Object[] args) {
 		System.out.println("开启事务");
 	}
 
-	@Match(classFilter = "org.loda.ioc.demo.AopDemo", methodMatch = "hehe")
 	@Override
 	public void end(Method method, Object[] args, Object retVal) {
 		System.out.println("关闭事务");

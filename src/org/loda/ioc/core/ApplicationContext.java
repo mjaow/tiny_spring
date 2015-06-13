@@ -19,7 +19,7 @@ public class ApplicationContext implements BeanFactory {
 	/**
 	 * 使用map作为容器存储bean对象
 	 */
-	protected Map<String, Object> map = new HashMap<String, Object>();
+	protected Map<String, Object> container = new HashMap<String, Object>();
 	
 	/**
 	 * 以下两个方法都是获取bean容器中的bean对象
@@ -27,26 +27,14 @@ public class ApplicationContext implements BeanFactory {
 
 	@Override
 	public Object getBean(String beanName) {
-		return map.get(beanName);
+		return container.get(beanName);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getBean(Class<T> requireType) {
-		return (T) map
+		return (T) container
 				.get(StringUtils.uncapitalize(requireType.getSimpleName()));
-	}
-
-	/**
-	 * 
-	* @Title: refresh 
-	* @Description: 清理bean容器 
-	* @param     设定文件 
-	* @return void    返回类型 
-	* @throws
-	 */
-	protected void refresh() {
-		map.clear();
 	}
 
 	/**

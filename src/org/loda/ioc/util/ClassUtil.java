@@ -1,5 +1,8 @@
 package org.loda.ioc.util;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.AnnotatedElement;
+
 import org.loda.ioc.core.AnnotationContext;
 
 /**
@@ -48,20 +51,61 @@ public class ClassUtil {
 
 	/**
 	 * 
-	* @Title: newInstance 
-	* @Description: TODO(这里用一句话描述这个方法的作用) 
-	* @param @param className 类全限定名
-	* @param @param paramType 参数类型 
-	* @param @param o 构造方法传递的参数
-	* @param @return    设定文件 
-	* @return Object    返回类型 
-	* @throws
+	 * @Title: newInstance
+	 * @Description: 调用有参构造函数来创建对象
+	 * @param @param className 类全限定名
+	 * @param @param paramType 参数类型
+	 * @param @param o 构造方法传递的参数
+	 * @param @return 设定文件
+	 * @return Object 返回类型
+	 * @throws
 	 */
-	public static Object newInstance(String className, Class<?>[] paramType, Object[] o) {
+	public static Object newInstance(String className, Class<?>[] paramType,
+			Object[] o) {
 		try {
-			return Class.forName(className).getConstructor(paramType).newInstance(o);
+			return Class.forName(className).getConstructor(paramType)
+					.newInstance(o);
 		} catch (Exception e) {
 			throw new RuntimeException("创建对象失败", e);
 		}
 	}
+
+	/**
+	 * 
+	 * @Title: hasAnnotation
+	 * @Description: 判断元素element是否拥有annotationClass类型的注解
+	 * @param @param element
+	 * @param @param annotationClass
+	 * @param @return 设定文件
+	 * @return boolean 返回类型
+	 * @throws
+	 */
+	public static boolean hasAnnotation(AnnotatedElement element,
+			Class<? extends Annotation> annotationClass) {
+		return element.getAnnotation(annotationClass) != null;
+	}
+
+	/**
+	 * 
+	 * @Title: getMethodAnnotation
+	 * @Description: 获取方法上面的注解
+	 * @param @param targetClass
+	 * @param @param methodName
+	 * @param @param parameterTypes
+	 * @param @param annotationClass
+	 * @param @return 设定文件
+	 * @return T 返回类型
+	 * @throws
+	 */
+	public static <T extends Annotation> T getMethodAnnotation(
+			Class<?> targetClass, String methodName, Class<?>[] parameterTypes,
+			Class<T> annotationClass) {
+		try {
+			return targetClass.getMethod(methodName, parameterTypes)
+					.getAnnotation(annotationClass);
+		} catch (NoSuchMethodException e) {
+			throw new RuntimeException("找不到这个方法" + methodName, e);
+		}
+	}
+
 }

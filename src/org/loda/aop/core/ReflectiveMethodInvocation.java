@@ -27,11 +27,25 @@ public class ReflectiveMethodInvocation implements MethodInvocation {
 	 */
 	private List<Matcher> matches;
 
+	/**
+	 * 执行目标方法需要的参数
+	 */
 	private Object[] arguments;
 
+	/**
+	 * 目标方法
+	 */
 	private Method method;
 
+	/**
+	 * 目标对象
+	 */
 	private Object target;
+	
+	/**
+	 * 记录当前advice链条（chain）所需要执行的方法的索引
+	 */
+	private int index;
 
 	public ReflectiveMethodInvocation(List<MethodInterceptor> chain,
 			List<Matcher> matches, Object[] arguments, Method method,
@@ -42,11 +56,6 @@ public class ReflectiveMethodInvocation implements MethodInvocation {
 		this.method = method;
 		this.target = target;
 	}
-
-	/**
-	 * 记录当前advice链条（chain）所需要执行的方法的索引
-	 */
-	private int index;
 
 	@Override
 	public Object[] getArguments() {
@@ -65,6 +74,7 @@ public class ReflectiveMethodInvocation implements MethodInvocation {
 
 	@Override
 	public Object proceed() throws Throwable {
+		//当链条走完的时候调用目标方法
 		if (index == chain.size())
 			return invokeJoinpoint();
 

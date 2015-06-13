@@ -1,6 +1,6 @@
-//package org.loda.ioc.demo;
-//
-//public interface IAopDemo {
-//
-//	void doSomething();
-//}
+package org.loda.ioc.demo;
+
+public interface IAopDemo {
+
+	void doSomething();
+}
